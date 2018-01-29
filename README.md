@@ -20,25 +20,27 @@ Define the following environment variables (edit as needed):
 ```
 export NEMS_BAPHY_API_HOST='localhost'
 export NEMS_BAPHY_API_PORT='3003'
-export MYSQL_HOST='hyrax.ohsu.edu
+export MYSQL_HOST=
 export MYSQL_USER=
 export MYSQL_PASS=
-export MYSQL_DB='cell'
+export MYSQL_DB=
 export MYSQL_PORT='3306'
 ```
 
 Then run the server with `python3 -m nems_baphy_api`.
 
+Note that `NEMS_BAPHY_API_HOST` is localhost for testing, but be sure to make it an externally-facing address if you want anybody else to be able to use it.
+
 
 ## Testing the API
 
-In a new terminal, you should be able to test that the API is working using:
+In a new terminal on that same machine, you should be able to test that the API is working using:
 
 ```
-curl http://neuralprediction.org:3003/by-batch/273/gus018c-a3
+curl http://localhost:3003/by-batch/273/gus018c-a3
 ```
   
-where '273' is the batch and 'por39' is the cellid.
+where '273' is the batch and 'por39' is the cellid. 
 
 
 ## Future work

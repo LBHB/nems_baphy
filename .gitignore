@@ -202,3 +202,7 @@ Session.vim
 .netrwhist
 # auto-generated tag files
 tags
+
+# configurations
+configs/*
+!configs/default_config.sh

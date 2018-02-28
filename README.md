@@ -17,7 +17,7 @@ pip3 install flask_restful --user
 Edit the configuration in "default_config.sh". Then run
 
 ```
-source default_config.sh   # Sets environment variables
+source configs/default_config.sh   # Sets environment variables
 python3 -m nems_baphy_api
 ```
 

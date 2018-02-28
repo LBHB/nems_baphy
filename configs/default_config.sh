@@ -1,6 +1,6 @@
 # Note: Please make a renamed copy of this file rather than editing it.
-# Also, please add that filename to the .gitignore so that you do not
-# accidentally commit your secrets (host, pass, etc) to the git repo.
+# By default, all configs in this directory (confifgs) will not be added
+# to the git repo, in order to keep your secrets (host, pass, etc) safe.
 
 export NEMS_BAPHY_API_HOST='localhost'
 export NEMS_BAPHY_API_PORT='3003'

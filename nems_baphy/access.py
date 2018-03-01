@@ -1,5 +1,5 @@
 import nems_baphy.db as nd
-import nems_baphy.utilities.baphy
+import nems_baphy.utilities.baphy as baphy
 
 
 def list_recordings(batch):
@@ -39,12 +39,12 @@ def _load_from_271(cellid,
                'includeprestim': includeprestim,
                'pupil': pupil,
                'stim': stim}
-    recording = nems.utilities.baphy.baphy_load_recording(cellid, batch, options)
+    recording = baphy.baphy_load_recording(cellid, batch, options)
     return recording
 
 def test_load_recording_from_baphy():
 
-    rec = load_recording_from_baphy(batch=271, cellid='bbl086b-11-1')
+    rec = load_recording_from_baphy(batch=271, cellid='bbl086b-23-1')
     print(rec)
     
     # # TODO: Recording should contain more info

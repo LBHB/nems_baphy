@@ -1,6 +1,7 @@
 import os
 import datetime
 import sys
+import pandas as pd
 import numpy as np
 import logging
 import nems_baphy.util
@@ -51,6 +52,7 @@ Session = sessionmaker(bind=engine)
 
 
 # Same as above, but duplicated for use w/ cluster
+clst_db_uri = db_uri
 cluster_engine = create_engine(
     clst_db_uri, pool_recycle=POOL_RECYCLE,
 )

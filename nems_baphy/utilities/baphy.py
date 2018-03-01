@@ -1,13 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jun 14 09:33:47 2017
-@author: svd, changes added by njs
-"""
-
 import logging
-log = logging.getLogger(__name__)
-
 import re
 import os
 import os.path
@@ -23,27 +14,17 @@ import nems.utilities as nu
 import matplotlib.pyplot as plt
 import nems.signal
 import nems.recording
+import nems.db as db
 
-try:
-    import nems.db as db
-except Exception as e:
-    log.info(e)
-    log.info('Running without db')
-    db = None
-'''
-try:
-    import nems_config.Storage_Config as sc
-except Exception as e:
-    log.info(e)
-    from nems_config.defaults import STORAGE_DEFAULTS
-    sc = STORAGE_DEFAULTS
-'''
+log = logging.getLogger(__name__)
+
+# TODO: Make this part of the config
 # paths to baphy data -- standard locations on elephant
 stim_cache_dir='/auto/data/tmp/tstim/'  # location of cached stimuli
 spk_subdir='sorted/'   # location of spk.mat files relative to parmfiles
 
+# TODO : DELETE OR PRUNE EVERYTHING DOWN TO THE NATIVE BAPHY FUNCTIONS AT END 
 
-""" TODO : DELETE OR PRUNE EVERYTHING DOWN TO THE NATIVE BAPHY FUNCTIONS AT END """
 
 def load_baphy_file(filepath, level=0):
     """

@@ -1,98 +1,37 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-
-nems_db library
-
-Created on Fri Jun 16 05:20:07 2017
-
-@author: svd
-"""
-
-import logging
-log = logging.getLogger(__name__)
-
 import os
 import datetime
 import sys
 import numpy as np
+import logging
+import nems_baphy.util
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.automap import automap_base
-import pandas as pd
-import pandas.io.sql as psql
 
-# SVD disabling defaults. Must have nems_config/Database_Info.py set up
+log = logging.getLogger(__name__)
 
-#import nems_config.defaults
-#from nems.utilities.print import web_print
-#
-#try:
-#    import nems_config.Storage_Config as sc
-#    AWS = sc.USE_AWS
-#    # if AWS:
-#    #from nems.EC2_Mgmt import check_instance_count
-#except Exception as e:
-#    log.info(e)
-#    sc = nems_config.defaults.STORAGE_DEFAULTS
-#    AWS = False
+# TODO: instead of doing all this connection HERE (which occurs during import),
+#       we should instead have a "connect()" function instead of global vars!
 
-# Database settings
-# To specify database settings, store a file named Database_Info.py in the
-# nems_config directory (inside the top-level package folder) with this format:
-#   host = 'hosturl'
-#   user = 'username'
-#   passwd = 'password'
-#   database = 'database'
-# Order doesn't matter.
-try:
-    import nems_config.Database_Info as db
-    db_uri = 'mysql+pymysql://{0}:{1}@{2}/{3}'.format(
-        db.user, db.passwd, db.host, db.database
-    )
-except Exception as e:
-    log.info('No database info detected. Must have nems_config/Database_Info.py set up')
-    log.info(e)
-    path = os.path.dirname(nems_config.defaults.__file__)
-    i = path.find('nems/nems_config')
-    db_path = (path[:i + 5] + 'nems_sample/demo_db.db')
-    db_uri = 'sqlite:///' + db_path + '?check_same_thread=False'
-    nems_config.defaults.DEMO_MODE = True
-    log.info('Using demo mode: {0}'.format(nems_config.defaults.DEMO_MODE))
+creds = nems_baphy.util.ensure_env_vars(['MYSQL_HOST',
+                                         'MYSQL_USER',
+                                         'MYSQL_PASS',
+                                         'MYSQL_DB',
+                                         'MYSQL_PORT'])
 
-try:
-    import nems_config.Cluster_Database_Info as clst_db
-    # format:      dialect+driver://username:password@host:port/database
-    # to-do default port = 3306
-    if not hasattr(clst_db, 'port'):
-        log.info("No port specified for cluster db info, using default port")
-        port = 3306
-    else:
-        port = clst_db.port
-
-    clst_db_uri = 'mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
-        clst_db.user, clst_db.passwd, clst_db.host,
-        port, clst_db.database,
-    )
-
-except Exception as e:
-    log.info('No cluster database info detected')
-    log.info(e)
-    path = os.path.dirname(nems_config.defaults.__file__)
-    i = path.find('nems/nems_config')
-    db_path = (path[:i + 5] + 'nems_sample/demo_db.db')
-    clst_db_uri = 'sqlite:///' + db_path + '?check_same_thread=False'
-
+db_uri = 'mysql+pymysql://{0}:{1}@{2}/{3}'.format(creds['MYSQL_USER'],
+                                                  creds['MYSQL_PASS'],
+                                                  creds['MYSQL_HOST'],
+                                                  creds['MYSQL_DB'])
 
 # sets how often sql alchemy attempts to re-establish connection engine
-# TODO: query db for time-out variable and set this based on some fraction
-# of that
+# TODO: query db for time-out variable; set this to some fraction of that
 POOL_RECYCLE = 7200
 
-# create a database connection engine
+# Create a database connection engine
 engine = create_engine(db_uri, pool_recycle=POOL_RECYCLE)
 
-# create base class to mirror existing database schema
+# Create base class to mirror existing database schema
 Base = automap_base()
 Base.prepare(engine, reflect=True)
 

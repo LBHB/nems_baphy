@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
-# wrapper code for fitting models
-
 import os
-
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+import logging
+
 import nems
 import nems.initializers
 import nems.epoch as ep
@@ -22,9 +20,8 @@ import nems.db as nd
 from nems.recording import Recording
 from nems.fitters.api import dummy_fitter, coordinate_descent, scipy_minimize
 
-import logging
+
 log = logging.getLogger(__name__)
-#logging.basicConfig(level=logging.INFO)
 
 def run_loader_baphy(cellid,batch,loader):
     options = {}

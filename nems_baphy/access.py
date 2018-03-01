@@ -1,5 +1,5 @@
-import nems.db as nd
-import nems.utilities.baphy
+import nems_baphy.db as nd
+import nems_baphy.utilities.baphy
 
 
 def list_recordings(batch):
@@ -40,13 +40,13 @@ def _load_from_271(cellid,
                'pupil': pupil,
                'stim': stim}
     recording = nems.utilities.baphy.baphy_load_recording(cellid, batch, options)
-
-    except:
-        print("failed on cell {0}".format(cellid))    
-
+    return recording
 
 def test_load_recording_from_baphy():
-    pass
+
+    rec = load_recording_from_baphy(batch=271, cellid='')
+    print(rec)
+    
     # # TODO: Recording should contain more info
     # save_path="/auto/data/tmp/batch{0}_fs{1}_{2}{3}/".format(batch, 
     #                                                          rasterfs,
@@ -54,3 +54,5 @@ def test_load_recording_from_baphy():
     #                                                          chancount])
 
     # recording.save(save_path)
+
+test_load_recording_from_baphy()

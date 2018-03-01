@@ -1,20 +1,20 @@
-import logging
 import re
 import os
 import os.path
 import scipy.io
-import scipy.ndimage.filters
 import scipy.signal
 import numpy as np
 import sys
 import io
-
+import logging
 import pandas as pd
-import nems.utilities as nu
 import matplotlib.pyplot as plt
+
 import nems.signal
 import nems.recording
-import nems.db as db
+
+import nems_baphy.db as db
+import nems_baphy.utilities as nu
 
 log = logging.getLogger(__name__)
 

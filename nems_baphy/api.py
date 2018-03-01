@@ -2,12 +2,14 @@ import os
 import io
 import re
 
-from flask import abort, request, Response
+from flask import abort, Response
 from flask_restful import Resource
+
+from nems_baphy.access import load_recording_from_baphy
 
 # Define some regexes for sanitizing inputs
 RECORDING_REGEX = re.compile(r"[\-_a-zA-Z0-9]+\.tar\.gz$")
-CELLID_REGEX = re.compile(r"^\w+\d+\w-\w\d$")  # gus018c-a3
+CELLID_REGEX = re.compile(r"^[\-_a-zA-Z0-9]+$")
 BATCH_REGEX = re.compile(r"^\d+$")
 
 
@@ -53,12 +55,13 @@ class BaphyInterface(Resource):
     An interface to BAPHY that returns NEMS-compatable signal objects
     '''
     def __init__(self, **kwargs):
-        print(kwargs['host'],
-              kwargs['port'],
-              kwargs['user'],
-              kwargs['pass'],
-              kwargs['db'])
-        # self.db = ... # TODO
+        # self.host = kwargs['host'],
+        # self.port = kwargs['port'],
+        # self.user = kwargs['user'],
+        # self.pass = kwargs['pass'],
+        # self.db = kwargs['db']
+        # self.db = ... # TODO: Connect to database HERE
+        pass
 
     def get(self, batch, cellid):
         '''
@@ -67,25 +70,16 @@ class BaphyInterface(Resource):
         '''
         ensure_valid_batch(batch)
         ensure_valid_cellid(cellid)
+        batch = int(batch)
 
-        # Query MySQL to get a list of files
-        # TODO
+        # TODO: Make this work for all batches
+        if batch == 271:
+            rec = load_recording_from_baphy(batch=271, cellid='bbl086b-23-1')
+        else:
+            abort(400, 'Not yet implemented for batches other than 271.')
 
-        # Check that the files exist. If any are missing, throw an error
-        # TODO
-        # for f in files:
-        #     if not os.exists(f):
-        #        not_found()
-
-        # Now convert all files into a Recording object
-        # TODO
-        # rec = convert_to_rec()
-
-        # Zip the recording object
-        # TODO
-        d = '{"msg": "batch and cellid are sanitized"}'
-        
-        return Response(d, status=200, mimetype='application/json')
+        targz = rec.as_targz()
+        return Response(targz, status=200, mimetype='application/gzip')
 
     def put(self, batch, cellid):
         abort(400, 'Not yet implemented')

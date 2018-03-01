@@ -18,13 +18,13 @@ creds = ensure_env_vars(req_env_vars)
 app = Flask(__name__)
 api = Api(app)
 
-#api.add_resource(BaphyInterface,
-#                 '/by-batch/<string:batch>/<string:cellid>',
-#                 resource_class_kwargs={'host': creds['MYSQL_HOST'],
-#                                        'user': creds['MYSQL_USER'],
-#                                        'pass': creds['MYSQL_PASS'],
-#                                        'db':   creds['MYSQL_DB'],
-#                                        'port': creds['MYSQL_PORT']})
+api.add_resource(BaphyInterface,
+                 '/baphy/<string:batch>/<string:cellid>',
+                 resource_class_kwargs={'host': creds['MYSQL_HOST'],
+                                        'user': creds['MYSQL_USER'],
+                                        'pass': creds['MYSQL_PASS'],
+                                        'db':   creds['MYSQL_DB'],
+                                        'port': creds['MYSQL_PORT']})
 
 api.add_resource(DirectoryInterface,
                  '/recording/<string:rec>',

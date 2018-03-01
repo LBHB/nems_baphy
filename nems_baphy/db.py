@@ -53,9 +53,7 @@ Session = sessionmaker(bind=engine)
 
 # Same as above, but duplicated for use w/ cluster
 clst_db_uri = db_uri
-cluster_engine = create_engine(
-    clst_db_uri, pool_recycle=POOL_RECYCLE,
-)
+cluster_engine = create_engine(clst_db_uri, pool_recycle=POOL_RECYCLE,)
 
 cluster_Base = automap_base()
 cluster_Base.prepare(cluster_engine, reflect=True)
@@ -66,10 +64,8 @@ cluster_tComputer = cluster_Base.classes.tComputer
 cluster_Session = sessionmaker(bind=cluster_engine)
 
 
-def enqueue_models(
-        celllist, batch, modellist, force_rerun=False,
-        user=None, codeHash="master", jerbQuery='',
-):
+def enqueue_models(celllist, batch, modellist, force_rerun=False,
+                   user=None, codeHash="master", jerbQuery='', ):
     """Call enqueue_single_model for every combination of cellid and modelname
     contained in the user's selections.
 
@@ -535,8 +531,7 @@ def get_batch(name=None, batchid=None):
     if not name is None:
        sql += " AND name like %s"
        params = params+("%"+name+"%",)
-    print(sql)
-    print(params)
+
     d = pd.read_sql(sql=sql, con=engine, params=params)
 
     return d
@@ -556,8 +551,7 @@ def get_batch_cells(batch=None, cellid=None, rawid=None):
     if not rawid is None:
         sql+= " AND rawid = %s"
         params=params+(rawid,)
-    print(sql)
-    print(params)
+
     d = pd.read_sql(sql=sql, con=engine, params=params)
 
     return d
@@ -584,8 +578,6 @@ def get_batch_cell_data(batch=None, cellid=None, rawid=None, label=None
        params = params+(label,)
 
        
-    #print(sql)
-    #print(params)
     d = pd.read_sql(sql=sql, con=engine, params=params)
     d.set_index(['cellid', 'groupid', 'label', 'rawid'], inplace=True)
     d=d['filepath'].unstack('label')

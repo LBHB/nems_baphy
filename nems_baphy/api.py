@@ -72,14 +72,12 @@ class BaphyInterface(Resource):
         ensure_valid_cellid(cellid)
         batch = int(batch)
 
-        # TODO: Make this work for all batches
-        if batch == 271:
-            rec = load_recording_from_baphy(batch=271, cellid='bbl086b-23-1')
+        rec = load_recording_from_baphy(batch=batch, cellid=cellid)
+        if rec:
+            targz = rec.as_targz()
+            return Response(targz, status=200, mimetype='application/gzip')
         else:
-            abort(400, 'Not yet implemented for batches other than 271.')
-
-        targz = rec.as_targz()
-        return Response(targz, status=200, mimetype='application/gzip')
+            abort(400, 'load_recording_from_baphy returned None')
 
     def put(self, batch, cellid):
         abort(400, 'Not yet implemented')

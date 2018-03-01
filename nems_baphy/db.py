@@ -20,10 +20,11 @@ creds = nems_baphy.util.ensure_env_vars(['MYSQL_HOST',
                                          'MYSQL_DB',
                                          'MYSQL_PORT'])
 
-db_uri = 'mysql+pymysql://{0}:{1}@{2}/{3}'.format(creds['MYSQL_USER'],
-                                                  creds['MYSQL_PASS'],
-                                                  creds['MYSQL_HOST'],
-                                                  creds['MYSQL_DB'])
+db_uri = 'mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(creds['MYSQL_USER'],
+                                                      creds['MYSQL_PASS'],
+                                                      creds['MYSQL_HOST'],
+                                                      creds['MYSQL_PORT'],
+                                                      creds['MYSQL_DB'])
 
 # sets how often sql alchemy attempts to re-establish connection engine
 # TODO: query db for time-out variable; set this to some fraction of that

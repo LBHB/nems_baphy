@@ -13,14 +13,19 @@ def list_recordings(batch):
 
 def load_recording_from_baphy(batch, cellid, **options):
     '''
-    Returns a recording object loaded from Baphy.
+    Returns a recording object loaded from Baphy, or None
+    if no matching object was found.
     '''
     if batch in [271]:
         return _load_from_271(cellid, **options)
+    # TODO: OTHER BATCHES HERE
     else:
-        raise NotImplementedError
+        ## TODO: log a warning
+        return None
 
 
+# By using functions, we can set some default options for the batch
+# in a way that will throw an error if an unexpected option is given.
 def _load_from_271(cellid,
                    rasterfs=100,
                    chancount=18,

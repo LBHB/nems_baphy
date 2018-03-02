@@ -2,7 +2,7 @@ import os
 import io
 import re
 
-from flask import abort, Response
+from flask import abort, Response, request
 from flask_restful import Resource
 
 from nems_baphy.access import load_recording_from_baphy
@@ -72,7 +72,15 @@ class BaphyInterface(Resource):
         ensure_valid_cellid(cellid)
         batch = int(batch)
 
-        rec = load_recording_from_baphy(batch=batch, cellid=cellid)
+        options = {}
+        # TODO: Sanitize optional arguments
+        if 'rasterfs' in request.args:
+            options['rasterfs'] =  int(request.args['rasterfs'])
+        if 'chancount' in request.args:
+            options['chancount'] =  int(request.args['chancount'])
+        # TODO: stimfmt is a string, includprestim/stim/pupil are booleans
+
+        rec = load_recording_from_baphy(batch=batch, cellid=cellid, **options)
         if rec:
             targz = rec.as_targz()
             return Response(targz, status=200, mimetype='application/gzip')

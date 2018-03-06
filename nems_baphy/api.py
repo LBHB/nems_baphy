@@ -1,23 +1,12 @@
-import os
-import io
 import re
-
 from flask import abort, Response, request
 from flask_restful import Resource
 
 import nems_baphy.baphy as baphy
 
-
 # Define some regexes for sanitizing inputs
-RECORDING_REGEX = re.compile(r"[\-_a-zA-Z0-9]+\.tar\.gz$")
 CELLID_REGEX = re.compile(r"^[\-_a-zA-Z0-9]+$")
 BATCH_REGEX = re.compile(r"^\d+$")
-
-
-def valid_recording_filename(recording_filename):
-    ''' Input Sanitizer.  True iff the filename has a valid format. '''
-    matches = RECORDING_REGEX.match(recording_filename)
-    return matches
 
 
 def valid_cellid(cellid):
@@ -40,11 +29,6 @@ def ensure_valid_cellid(cellid):
 def ensure_valid_batch(batch):
     if not valid_batch(batch):
         abort(400, 'Invalid batch:' + batch)
-
-
-def ensure_valid_recording_filename(rec):
-    if not valid_recording_filename(rec):
-        abort(400, 'Invalid recording:' + rec)
 
 
 def valid_boolean(name, val):
@@ -70,7 +54,7 @@ class BaphyInterface(Resource):
         # self.user = kwargs['user'],
         # self.pass = kwargs['pass'],
         # self.db = kwargs['db']
-        # self.db = ... # TODO: Connect to database HERE
+        # self.db = ... # TODO: Connect to database HERE, not in db.py
         pass
 
     def get(self, batch, cellid):
@@ -113,39 +97,7 @@ class BaphyInterface(Resource):
             abort(400, 'load_recording_from_baphy returned None')
 
     def put(self, batch, cellid):
-        abort(400, 'Not yet implemented')
+        abort(400, 'Not implemented; use PUT instead')
 
     def delete(self, batch, cellid):
-        abort(400, 'Not yet Implemented')
-
-
-class DirectoryInterface(Resource):
-    '''
-    An interface that serves out NEMS-compatable .tar.gz recordings
-    '''
-    def __init__(self, **kwargs):
-        self.targz_dir = kwargs['targz_dir']
-
-    def get(self, rec):
-        '''
-        Serves out a recording file in .tar.gz format.
-        TODO: Replace with flask file server or NGINX
-        '''
-        ensure_valid_recording_filename(rec)
-        filepath = os.path.join(self.targz_dir, rec)
-        if not os.path.exists(filepath):
-            not_found()
-        d = io.BytesIO()
-        with open(filepath, 'rb') as f:
-            d.write(f.read())
-            d.seek(0)
-        return Response(d, status=200, mimetype='application/gzip')
-
-    def put(self, rec):
-        abort(400, 'Not yet implemented')
-
-    def post(self, rec):
-        abort(400, 'Not yet implemented')
-
-    def delete(self, rec):
-        abort(400, 'Not yet Implemented')
+        abort(400, 'Not implemented; allowing http DELETE is a little dangerous.')

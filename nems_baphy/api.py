@@ -5,7 +5,8 @@ import re
 from flask import abort, Response, request
 from flask_restful import Resource
 
-from nems_baphy.access import load_recording_from_baphy
+import nems_baphy.baphy as baphy
+
 
 # Define some regexes for sanitizing inputs
 RECORDING_REGEX = re.compile(r"[\-_a-zA-Z0-9]+\.tar\.gz$")
@@ -46,6 +47,15 @@ def ensure_valid_recording_filename(rec):
         abort(400, 'Invalid recording:' + rec)
 
 
+def valid_boolean(name, val):
+    if request.args['pupil'] == 'True':
+        return True
+    elif request.args['pupil'] == 'False':
+        return False
+    else:
+        abort(400, '{} must be True or False'.format(name))
+
+
 def not_found():
     abort(404, "Resource not found. ")
 
@@ -73,17 +83,32 @@ class BaphyInterface(Resource):
         batch = int(batch)
 
         options = {}
-        # TODO: Sanitize optional arguments
         if 'rasterfs' in request.args:
-            options['rasterfs'] =  int(request.args['rasterfs'])
-        if 'chancount' in request.args:
-            options['chancount'] =  int(request.args['chancount'])
-        # TODO: stimfmt is a string, includprestim/stim/pupil are booleans
+            options['rasterfs'] = int(request.args['rasterfs'])
 
-        rec = load_recording_from_baphy(batch=batch, cellid=cellid, **options)
+        if 'chancount' in request.args:
+            options['chancount'] = int(request.args['chancount'])
+
+        if 'pupil' in request.args:
+            options['pupil'] = valid_boolean('pupil', request.args['pupil'])
+
+        if 'stim' in request.args:
+            options['stim'] = valid_boolean('stim', request.args['stim'])
+
+        if 'includeprestim' in request.args:
+            options['includeprestim'] = valid_boolean('includeprestim', request.args['includeprestim'])
+
+        if 'stimfmt' in request.args:
+            options['stimfmt'] = request.args['stimfmt']
+
+        # TODO: Add other allowed options as needed
+
+        rec = baphy.baphy_load_recording(cellid, batch, options)
+
         if rec:
             targz = rec.as_targz()
-            return Response(targz, status=200, mimetype='application/gzip')
+            return Response(targz, status=200,
+                            mimetype='application/x-tgz')
         else:
             abort(400, 'load_recording_from_baphy returned None')
 

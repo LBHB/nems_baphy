@@ -1,5 +1,5 @@
 import nems_baphy.db as nd
-import nems_baphy.utilities.baphy as baphy
+import nems_db.baphy as baphy
 
 
 def list_recordings(batch):
@@ -10,18 +10,22 @@ def list_recordings(batch):
     cellids = list(cell_data['cellid'].unique())
     return cellids
 
-
+""" I believe everything below this point can be deleted """
 def load_recording_from_baphy(batch, cellid, **options):
     '''
     Returns a recording object loaded from Baphy, or None
     if no matching object was found.
     '''
-    if batch in [271]:
-        return _load_from_271(cellid, **options)
+    recording = baphy.baphy_load_recording(cellid, batch, options)
+    return recording
+
+    # svd removed batch-specific processing. That has been offloaded to nems_db        
+    #if batch in [271]:
+    #    return _load_from_271(cellid, **options)
     # TODO: OTHER BATCHES HERE
-    else:
+    #else:
         ## TODO: log a warning
-        return None
+    #    return None
 
 
 # By using functions, we can set some default options for the batch

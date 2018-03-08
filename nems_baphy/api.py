@@ -1,12 +1,8 @@
-import os
-import io
 import re
 
 from flask import abort, Response, request
 from flask_restful import Resource
 
-from nems_baphy.access import load_recording_from_baphy
-import nems_baphy.db as nd
 import nems_db.baphy as baphy
 
 # Define some regexes for sanitizing inputs
@@ -75,15 +71,14 @@ class BaphyInterface(Resource):
         batch = int(batch)
 
         options = request.args.copy()
-        
-        # TODO: Sanitize optional arguments
-        #if 'rasterfs' in request.args:
-        #    options['rasterfs'] =  int(request.args['rasterfs'])
-        #if 'chancount' in request.args:
-        #    options['chancount'] =  int(request.args['chancount'])
-        # TODO: stimfmt is a string, includprestim/stim/pupil are booleans
+
+        # TODO: Sanitize arguments
+
+        # TODO: Wrapping this in a try/catch is acceptable given how likely it is to fail,
+        #       and then give clients some feedback about what went wrong:
+
         rec = baphy.baphy_load_recording(cellid, batch, options)
-        #rec = load_recording_from_baphy(batch=batch, cellid=cellid, **options)
+
         if rec:
             targz = rec.as_targz()
             return Response(targz, status=200, mimetype='application/gzip')
@@ -94,36 +89,4 @@ class BaphyInterface(Resource):
         abort(400, 'Not yet implemented')
 
     def delete(self, batch, cellid):
-        abort(400, 'Not yet Implemented')
-
-
-class DirectoryInterface(Resource):
-    '''
-    An interface that serves out NEMS-compatable .tar.gz recordings
-    '''
-    def __init__(self, **kwargs):
-        self.targz_dir = kwargs['targz_dir']
-
-    def get(self, rec):
-        '''
-        Serves out a recording file in .tar.gz format.
-        TODO: Replace with flask file server or NGINX
-        '''
-        ensure_valid_recording_filename(rec)
-        filepath = os.path.join(self.targz_dir, rec)
-        if not os.path.exists(filepath):
-            not_found()
-        d = io.BytesIO()
-        with open(filepath, 'rb') as f:
-            d.write(f.read())
-            d.seek(0)
-        return Response(d, status=200, mimetype='application/gzip')
-
-    def put(self, rec):
-        abort(400, 'Not yet implemented')
-
-    def post(self, rec):
-        abort(400, 'Not yet implemented')
-
-    def delete(self, rec):
         abort(400, 'Not yet Implemented')

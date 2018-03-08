@@ -4,7 +4,6 @@
 
 export NEMS_BAPHY_API_HOST='localhost'
 export NEMS_BAPHY_API_PORT='3003'
-export NEMS_RECORDINGS_DIR="/auto/data/recordings/"
 export MYSQL_HOST=
 export MYSQL_USER=
 export MYSQL_PASS=

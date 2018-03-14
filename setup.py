@@ -28,11 +28,6 @@ setup(
     description='Neural Encoding Model System - Database support',
     long_description=long_description,
     url='http://neuralprediction.org',
-    install_requires=GENERAL_REQUIRES,
+    #install_requires=GENERAL_REQUIRES,
     classifiers=[],
-    entry_points={
-        'console_scripts': [
-            #'nems-fit-single=nems.application.cmd_launcher:main',
-        ],
-    }
 )
